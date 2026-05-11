@@ -1,0 +1,32 @@
+.rentals-page {
+  padding-bottom: 6rem;
+}
+
+.rentals-header {
+  margin-bottom: 2rem;
+}
+
+.info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--color-secondary);
+}
+
+.info-banner h4 {
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.info-banner p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.search-bar {
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
