@@ -6,25 +6,20 @@ const Footer = () => {
     <footer className="footer">
       <div className="container footer-container">
         <div className="footer-brand">
-          <div className="brand" style={{ color: 'white' }}>
-            <Sprout size={32} color="var(--color-primary-light)" />
-            <span className="brand-name" style={{ color: 'white' }}>AgriConnect</span>
+          <div className="brand" style={{ color: 'var(--color-primary-dark)' }}>
+            <Sprout size={32} color="var(--color-primary)" />
+            <span className="brand-name" style={{ color: 'var(--color-primary-dark)' }}>AgriConnect</span>
           </div>
           <p className="footer-desc">
             Empowering farmers and buyers with a smart, connected agricultural marketplace and resource sharing platform.
           </p>
-          <div className="social-links">
-            <a href="#" className="social-icon">FB</a>
-            <a href="#" className="social-icon">TW</a>
-            <a href="#" className="social-icon">IG</a>
-          </div>
+
         </div>
 
         <div className="footer-links">
           <h4>Platform</h4>
           <ul>
             <li><a href="/marketplace">Marketplace</a></li>
-            <li><a href="/rentals">Rentals & Equipment</a></li>
             <li><a href="#">Pricing</a></li>
             <li><a href="#">Farmers Directory</a></li>
           </ul>

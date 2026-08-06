@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
+import { api } from '../lib/api';
 import { useAuth } from './AuthContext';
 
 const ResourceContext = createContext();
@@ -13,12 +13,7 @@ export const ResourceProvider = ({ children }) => {
   const fetchResources = useCallback(async () => {
     try {
       setLoading(true);
-      const { data, error: fetchError } = await supabase
-        .from('resources')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
+      const data = await api.get('/resources');
       setResources(data || []);
     } catch (err) {
       console.error('Error fetching resources:', err);
@@ -36,18 +31,28 @@ export const ResourceProvider = ({ children }) => {
     if (!user) throw new Error('You must be logged in to add a resource');
     
     try {
-      const { data, error: insertError } = await supabase
-        .from('resources')
-        .insert([{ ...resourceData, user_id: user.id }])
-        .select();
-
-      if (insertError) throw insertError;
+      const data = await api.post('/resources', resourceData);
       
       // Update local state
-      setResources(prev => [data[0], ...prev]);
-      return data[0];
+      setResources(prev => [data, ...prev]);
+      return data;
     } catch (err) {
       console.error('Error adding resource:', err);
+      throw err;
+    }
+  };
+
+  const updateResource = async (id, resourceData) => {
+    if (!user) throw new Error('You must be logged in to update a resource');
+
+    try {
+      const data = await api.put(`/resources/${id}`, resourceData);
+
+      // Update local state
+      setResources(prev => prev.map(r => String(r.id) === String(id) ? { ...r, ...resourceData, ...(data || {}) } : r));
+      return data;
+    } catch (err) {
+      console.error('Error updating resource:', err);
       throw err;
     }
   };
@@ -56,16 +61,10 @@ export const ResourceProvider = ({ children }) => {
     if (!user) throw new Error('You must be logged in to delete a resource');
 
     try {
-      const { error: deleteError } = await supabase
-        .from('resources')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user.id); // Security: ensure user owns the resource
-
-      if (deleteError) throw deleteError;
+      await api.delete(`/resources/${id}`);
 
       // Update local state
-      setResources(prev => prev.filter(r => r.id !== id));
+      setResources(prev => prev.filter(r => String(r.id) !== String(id)));
     } catch (err) {
       console.error('Error deleting resource:', err);
       throw err;
@@ -78,6 +77,7 @@ export const ResourceProvider = ({ children }) => {
       loading, 
       error, 
       addResource, 
+      updateResource,
       deleteResource,
       refreshResources: fetchResources 
     }}>

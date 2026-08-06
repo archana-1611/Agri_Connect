@@ -1,0 +1,218 @@
+.insights-header {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+  color: white;
+  padding: 3rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.insights-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 2.25rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.insights-header .text-gradient-gold {
+  background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+.insights-header p {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* Weather Stats Advisory */
+.advisory-card {
+  border-left: 6px solid var(--color-primary);
+}
+
+.weather-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.weather-stat-box {
+  background: var(--bg-main);
+  border: 1px solid rgba(21, 128, 61, 0.1);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weather-icon-temp { color: #f97316; }
+.weather-icon-rain { color: #3b82f6; }
+.weather-icon-wind { color: #64748b; }
+
+.advisory-content-box {
+  background: #fefbeb;
+  border: 1px solid #fde047;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.advisory-text {
+  font-size: 0.825rem;
+  color: #78350f;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Mandi Prices table */
+.live-pill {
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  animation: pulse 1s infinite;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.prices-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.prices-table th, .prices-table td {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+}
+
+.prices-table th {
+  background: rgba(0,0,0,0.02);
+  color: var(--text-muted);
+  font-weight: 700;
+  border-bottom: 2px solid rgba(0,0,0,0.05);
+}
+
+.prices-table tr {
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.prices-table tr:hover {
+  background: rgba(21, 128, 61, 0.02);
+}
+
+.crop-name-cell {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.unit-cell {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.price-cell {
+  color: var(--text-main);
+  font-size: 0.875rem;
+}
+
+.trend-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.trend-cell.positive {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.trend-cell.negative {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.trend-cell.neutral {
+  background: rgba(0,0,0,0.05);
+  color: var(--text-muted);
+}
+
+
+
+/* Schemes Registry Cards */
+.schemes-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.scheme-full-card {
+  padding: 1.25rem;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.sponsor-lbl {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #b45309;
+  text-transform: uppercase;
+  background: rgba(234, 179, 8, 0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+/* Sci-fi Market Price Synchronization Animations */
+.animate-spin-slow {
+  animation: slowSpin 1.8s linear infinite;
+}
+
+@keyframes slowSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.alert-success-mandi {
+  box-shadow: 0 4px 15px -2px rgba(34, 197, 94, 0.08);
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sync-dashboard-card {
+  box-shadow: 0 4px 20px -2px rgba(34, 197, 94, 0.05);
+  animation: slideInUp 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

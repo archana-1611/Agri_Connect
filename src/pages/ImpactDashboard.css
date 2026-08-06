@@ -1,0 +1,181 @@
+/* Platform Community Impact Dashboard Stylesheet */
+
+.impact-header {
+  background: linear-gradient(135deg, #15803d 0%, #166534 50%, #b45309 100%);
+  color: white;
+}
+
+.gold-premium-tag {
+  background: rgba(234, 179, 8, 0.15);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  color: #fef08a;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+/* KPI card expansions */
+.kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.kpi-badge.positive {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.bg-orange-light {
+  background: rgba(249, 115, 22, 0.08);
+}
+
+/* Interactive Map HUD */
+.map-hud-card {
+  padding: 1.5rem;
+}
+
+.live-hub-badge {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: var(--color-primary-dark);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.district-selectors-scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  scrollbar-width: none;
+}
+
+.district-selectors-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.district-chip {
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background: white;
+  color: var(--text-muted);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.district-chip:hover {
+  border-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.district-chip.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(21, 128, 61, 0.3);
+}
+
+.district-hud-display {
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(21, 128, 61, 0.12);
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.02) 0%, white 100%);
+}
+
+.fpos-pill {
+  background: rgba(21, 128, 61, 0.08);
+  border: 1px solid rgba(21, 128, 61, 0.18);
+  color: var(--color-primary-dark);
+  padding: 0.2rem 0.5rem;
+  border-radius: 50px;
+}
+
+.hud-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+}
+
+.hud-stat-box {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.hud-stat-box .val {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+/* Platform Achievements Tiers */
+.achievements-card {
+  padding: 1.5rem;
+}
+
+.achievement-row {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: flex-start;
+}
+
+.ach-authority {
+  font-size: 0.65rem;
+}
+
+/* Recent green deals ticker */
+.community-ticker-card {
+  padding: 1.5rem;
+}
+
+.deal-row {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Join movement circular cta */
+.circular-cta-card {
+  padding: 2rem 1.5rem;
+  position: relative;
+}
+
+.glow-green {
+  border-left: 5px solid var(--color-primary-light);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.03);
+}
+
+/* Bottom grids */
+.bottom-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.orange-glow {
+  border-left: 5px solid #f97316;
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.03);
+}

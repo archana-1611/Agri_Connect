@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
-import { MessageCircle, Check, X, User, ArrowRight, Inbox } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { 
+  MessageCircle, Check, X, User, ArrowRight, Inbox, Search, 
+  Sparkles, CheckCircle2, Sprout, Store, Truck, ShieldCheck
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import './Messages.css';
 
 const Messages = () => {
   const { user } = useAuth();
+  const { isTamil } = useLanguage();
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('chats'); // 'chats' or 'requests'
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (!user) {
@@ -25,38 +32,15 @@ const Messages = () => {
     try {
       setLoading(true);
       
-      // Fetch requests sent to me (receiver_id = user.id)
-      const { data: incomingRequests, error: reqError } = await supabase
-        .from('chat_requests')
-        .select(`
-          *,
-          sender:profiles!sender_id(*),
-          resource:resources(*)
-        `)
-        .eq('receiver_id', user.id)
-        .eq('status', 'pending');
+      const data = await api.get('/chats/requests');
+      const fetchedRequests = data.requests || [];
+      const fetchedChats = data.chats || [];
+      
+      setRequests(fetchedRequests);
+      setChats(fetchedChats);
 
-      if (reqError) throw reqError;
-      setRequests(incomingRequests || []);
-
-      // Fetch accepted chats (where I am sender or receiver)
-      const { data: activeChats, error: chatError } = await supabase
-        .from('chat_requests')
-        .select(`
-          *,
-          sender:profiles!sender_id(*),
-          receiver:profiles!receiver_id(*),
-          resource:resources(*)
-        `)
-        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .eq('status', 'accepted')
-        .order('created_at', { ascending: false });
-
-      if (chatError) throw chatError;
-      setChats(activeChats || []);
-
-      // Smart tab selection: if no chats but there are requests, show requests
-      if (activeChats && activeChats.length === 0 && incomingRequests && incomingRequests.length > 0) {
+      // Smart tab selection: if no active chats but there are requests, switch to requests
+      if (fetchedChats.length === 0 && fetchedRequests.length > 0) {
         setActiveTab('requests');
       }
 
@@ -69,193 +53,250 @@ const Messages = () => {
 
   const handleAccept = async (requestId) => {
     try {
-      const { error } = await supabase
-        .from('chat_requests')
-        .update({ status: 'accepted' })
-        .eq('id', requestId);
-
-      if (error) throw error;
-      
-      // Move to chat
+      await api.put(`/chats/requests/${requestId}`, { status: 'accepted' });
       fetchMessages();
       setActiveTab('chats');
-      alert('Request accepted! You can now start chatting.');
     } catch (err) {
-      alert('Error accepting request: ' + err.message);
+      alert(isTamil ? 'கோரிக்கையை ஏற்க முடியவில்லை: ' + err.message : 'Error accepting request: ' + err.message);
     }
   };
 
   const handleDecline = async (requestId) => {
-    if (!confirm('Are you sure you want to decline this chat request?')) return;
+    if (!confirm(isTamil ? 'இந்த அரட்டை கோரிக்கையை நிராகரிக்க விரும்புகிறீர்களா?' : 'Are you sure you want to decline this chat request?')) return;
     
     try {
-      const { error } = await supabase
-        .from('chat_requests')
-        .update({ status: 'rejected' })
-        .eq('id', requestId);
-
-      if (error) throw error;
+      await api.put(`/chats/requests/${requestId}`, { status: 'rejected' });
       fetchMessages();
     } catch (err) {
-      alert('Error declining request: ' + err.message);
+      alert(isTamil ? 'கோரிக்கையை நிராகரிக்க முடியவில்லை: ' + err.message : 'Error declining request: ' + err.message);
     }
   };
 
+  // Helper to extract initials from name
+  const getInitials = (name) => {
+    if (!name) return 'AC';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  // Filtered lists based on search term
+  const filteredChats = chats.filter(chat => {
+    const otherUser = chat.sender_id === user?.id ? chat.receiver : chat.sender;
+    const name = otherUser?.farm_name || otherUser?.full_name || '';
+    const topic = chat.resource?.title || chat.resource_title || '';
+    return name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+           topic.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const filteredRequests = requests.filter(req => {
+    const name = req.sender?.full_name || '';
+    const topic = req.resource?.title || req.resource_title || '';
+    return name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+           topic.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   if (loading) {
     return (
-      <div className="container flex-center" style={{paddingTop: '6rem', minHeight: '60vh'}}>
-         <div className="loader">Loading messages...</div>
+      <div className="container flex-center" style={{ paddingTop: '8rem', minHeight: '65vh' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div className="typing-dots flex-center" style={{ marginBottom: '1rem' }}>
+            <span></span><span></span><span></span>
+          </div>
+          <p className="text-muted font-medium">
+            {isTamil ? 'செய்திகள் ஏற்றப்படுகின்றன...' : 'Loading negotiation channels...'}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container" style={{paddingTop: '6rem', paddingBottom: '6rem'}}>
-      <div className="page-header" style={{marginBottom: '2rem'}}>
-        <h1>Messages & Requests</h1>
+    <div className="container messages-page-wrapper">
+      {/* 1. Header Banner */}
+      <div className="messages-header-card animate-fade-in">
+        <div className="messages-title-group">
+          <div>
+            <h1>
+              <MessageCircle size={28} color="var(--color-primary)" />
+              {isTamil ? 'செய்திகள் & கோரிக்கைகள்' : 'Messages & Requests'}
+            </h1>
+            <p className="messages-subtitle">
+              {isTamil 
+                ? 'உங்கள் விவசாய வளங்கள் மற்றும் வர்த்தக தொடர்புகளை நிகழ்நேரத்தில் நிர்வகிக்கவும்.' 
+                : 'Manage your active buyer & seller negotiations, farm surplus deals, and resource inquiries.'}
+            </p>
+          </div>
+          <div className="messages-live-tag">
+            <span className="messages-live-dot"></span>
+            <span>{isTamil ? 'நிகழ்நேர தொடர்பு' : 'Live Sync Active'}</span>
+          </div>
+        </div>
       </div>
 
-      <div className="glass" style={{borderRadius: 'var(--radius-lg)', overflow: 'hidden'}}>
-        {/* Tabs */}
-        <div style={{display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.1)'}}>
+      {/* 2. Controls & Search */}
+      <div className="messages-controls-card animate-fade-in stagger-1">
+        <div className="messages-tabs-container">
           <button 
+            className={`messages-tab-btn ${activeTab === 'chats' ? 'active' : ''}`}
             onClick={() => setActiveTab('chats')}
-            style={{
-              flex: 1, 
-              padding: '1.5rem', 
-              border: 'none', 
-              backgroundColor: activeTab === 'chats' ? 'rgba(46, 165, 87, 0.1)' : 'transparent',
-              borderBottom: activeTab === 'chats' ? '2px solid var(--color-primary)' : 'none',
-              fontWeight: '600',
-              cursor: 'pointer',
-              color: activeTab === 'chats' ? 'var(--color-primary-dark)' : 'var(--text-muted)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem'
-            }}
           >
-            <MessageCircle size={18} /> Active Chats ({chats.length})
+            <MessageCircle size={18} />
+            <span>{isTamil ? 'செயலில் உள்ள அரட்டைகள்' : 'Active Chats'}</span>
+            <span className="messages-tab-badge">{chats.length}</span>
           </button>
           <button 
+            className={`messages-tab-btn ${activeTab === 'requests' ? 'active' : ''}`}
             onClick={() => setActiveTab('requests')}
-            style={{
-              flex: 1, 
-              padding: '1.5rem', 
-              border: 'none', 
-              backgroundColor: activeTab === 'requests' ? 'rgba(46, 165, 87, 0.1)' : 'transparent',
-              borderBottom: activeTab === 'requests' ? '2px solid var(--color-primary)' : 'none',
-              fontWeight: '600',
-              cursor: 'pointer',
-              color: activeTab === 'requests' ? 'var(--color-primary-dark)' : 'var(--text-muted)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem'
-            }}
           >
-            <Inbox size={18} /> Incoming Requests ({requests.length})
+            <Inbox size={18} />
+            <span>{isTamil ? 'வந்த கோரிக்கைகள்' : 'Incoming Requests'}</span>
+            <span className="messages-tab-badge">{requests.length}</span>
           </button>
         </div>
 
-        {/* Content */}
-        <div style={{padding: '2rem'}}>
-          {activeTab === 'chats' ? (
-            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
-              {chats.length > 0 ? chats.map(chat => {
-                const otherUser = chat.sender_id === user.id ? chat.receiver : chat.sender;
-                return (
-                  <Link 
-                    key={chat.id} 
-                    to={`/chat/${chat.id}`}
-                    className="glass"
-                    style={{
-                      padding: '1.5rem', 
-                      borderRadius: 'var(--radius-md)', 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between',
-                      textDecoration: 'none',
-                      color: 'inherit',
-                      transition: 'transform 0.2s',
-                      backgroundColor: 'rgba(255,255,255,0.2)'
-                    }}
-                    onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
-                    onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}
-                  >
-                    <div style={{display: 'flex', alignItems: 'center', gap: '1.5rem'}}>
-                      <div style={{width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                        <User color="white" />
-                      </div>
-                      <div>
-                        <h4 style={{margin: '0 0 0.25rem 0', fontSize: '1.1rem'}}>{otherUser?.farm_name || otherUser?.full_name || 'AgriConnect User'}</h4>
-                        <p className="text-muted" style={{margin: 0, fontSize: '0.875rem'}}>
-                          Discussing: <strong>{chat.resource?.title || chat.resource_title}</strong>
-                        </p>
-                      </div>
-                    </div>
-                    <ArrowRight size={20} className="text-muted" />
-                  </Link>
-                );
-              }) : (
-                <div style={{textAlign: 'center', padding: '4rem', color: 'var(--text-muted)'}}>
-                  <MessageCircle size={48} style={{opacity: 0.2, marginBottom: '1rem'}} />
-                  <p>No active chats yet. Send a request to a seller to start a conversation!</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
-              {requests.length > 0 ? requests.map(req => (
-                <div 
-                  key={req.id} 
-                  className="glass"
-                  style={{
-                    padding: '1.5rem', 
-                    borderRadius: 'var(--radius-md)', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between',
-                    backgroundColor: 'rgba(255,255,255,0.2)'
-                  }}
+        <div className="messages-search-box">
+          <Search size={17} className="messages-search-icon" />
+          <input 
+            type="text" 
+            className="messages-search-input"
+            placeholder={isTamil ? "பெயர் அல்லது பொருளைத் தேடுக..." : "Filter by name or item..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* 3. Tab Contents */}
+      <div className="messages-list-container animate-fade-in stagger-2">
+        {activeTab === 'chats' ? (
+          filteredChats.length > 0 ? (
+            filteredChats.map(chat => {
+              const otherUser = chat.sender_id === user?.id ? chat.receiver : chat.sender;
+              const title = chat.resource?.title || chat.resource_title || (isTamil ? 'விவசாய பொருள் பேச்சுவார்த்தை' : 'Agri Resource Deal');
+              const displayName = otherUser?.farm_name || otherUser?.full_name || 'AgriConnect Member';
+              const userRole = otherUser?.role || (isTamil ? 'விவசாயி' : 'Farmer');
+
+              return (
+                <Link 
+                  key={chat.id} 
+                  to={`/chat/${chat.id}`}
+                  className="messages-item-card"
                 >
-                  <div style={{display: 'flex', alignItems: 'center', gap: '1.5rem'}}>
-                    <div style={{width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'var(--color-secondary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                      <User color="white" />
+                  <div className="messages-item-main">
+                    <div className="messages-user-avatar-wrapper">
+                      <div className="messages-user-avatar">
+                        {getInitials(displayName)}
+                      </div>
+                      <span className="messages-online-indicator"></span>
                     </div>
-                    <div>
-                      <h4 style={{margin: '0 0 0.25rem 0', fontSize: '1.1rem'}}>{req.sender?.full_name || 'Interested Buyer'}</h4>
-                      <p className="text-muted" style={{margin: 0, fontSize: '0.875rem'}}>
-                        Wants to chat about: <strong>{req.resource?.title || req.resource_title}</strong>
+
+                    <div className="messages-item-info">
+                      <div className="messages-user-name-row">
+                        <h4 className="messages-user-name">{displayName}</h4>
+                        <span className="messages-role-tag">{userRole}</span>
+                      </div>
+                      <p className="messages-topic-line">
+                        <span>{isTamil ? 'விவாதிக்கப்படுகிறது:' : 'Discussing:'}</span>
+                        <strong className="messages-topic-badge">🌾 {title}</strong>
                       </p>
                     </div>
                   </div>
-                  <div style={{display: 'flex', gap: '0.75rem'}}>
+
+                  <div className="messages-arrow-btn">
+                    <ArrowRight size={19} />
+                  </div>
+                </Link>
+              );
+            })
+          ) : (
+            <div className="messages-empty-card">
+              <div className="messages-empty-icon">
+                <MessageCircle size={36} />
+              </div>
+              <h3>{isTamil ? 'அரட்டைகள் எதுவும் இல்லை' : 'No Active Chats Found'}</h3>
+              <p>
+                {searchTerm 
+                  ? (isTamil ? 'உங்கள் தேடலுக்கு ஏற்ற முடிவுகள் கிடைக்கவில்லை.' : 'No active chats matching your search filter.') 
+                  : (isTamil ? 'வாங்குபவர்கள் அல்லது விற்பனையாளர்களுடன் அரட்டையடிக்க சந்தையைப் பார்வையிடவும்.' : 'You have no active conversations. Explore listings on the marketplace to connect!')}
+              </p>
+              <Link to="/marketplace" className="messages-explore-btn">
+                <Sprout size={18} />
+                <span>{isTamil ? 'சந்தையைப் பார்க்க' : 'Explore Marketplace'}</span>
+              </Link>
+            </div>
+          )
+        ) : (
+          filteredRequests.length > 0 ? (
+            filteredRequests.map(req => {
+              const senderName = req.sender?.full_name || (isTamil ? 'ஆர்வம் உள்ள வாங்குபவர்' : 'Interested Buyer');
+              const topic = req.resource?.title || req.resource_title || (isTamil ? 'விவசாய பொருள்' : 'Agricultural Surplus');
+              const userRole = req.sender?.role || (isTamil ? 'வாங்குபவர்' : 'Buyer');
+
+              return (
+                <div key={req.id} className="messages-item-card">
+                  <div className="messages-item-main">
+                    <div className="messages-user-avatar-wrapper">
+                      <div className="messages-user-avatar messages-avatar-request">
+                        {getInitials(senderName)}
+                      </div>
+                    </div>
+
+                    <div className="messages-item-info">
+                      <div className="messages-user-name-row">
+                        <h4 className="messages-user-name">{senderName}</h4>
+                        <span className="messages-role-tag" style={{ background: 'rgba(217, 119, 6, 0.1)', color: '#d97706' }}>
+                          {userRole}
+                        </span>
+                      </div>
+                      <p className="messages-topic-line">
+                        <span>{isTamil ? 'அரட்டையடிக்க விரும்புகிறார்:' : 'Wants to discuss:'}</span>
+                        <strong className="messages-topic-badge" style={{ background: 'rgba(254, 243, 199, 0.8)', color: '#92400e', borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+                          📦 {topic}
+                        </strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="messages-actions-group">
                     <button 
                       onClick={() => handleAccept(req.id)}
-                      className="btn btn-primary" 
-                      style={{padding: '0.5rem 1rem', fontSize: '0.875rem', gap: '0.4rem'}}
+                      className="messages-btn-accept"
                     >
-                      <Check size={16} /> Accept
+                      <Check size={16} />
+                      <span>{isTamil ? 'ஏற்றுக்கொள்' : 'Accept'}</span>
                     </button>
                     <button 
                       onClick={() => handleDecline(req.id)}
-                      className="btn" 
-                      style={{padding: '0.5rem 1rem', fontSize: '0.875rem', backgroundColor: 'rgba(242, 109, 58, 0.1)', color: 'var(--color-accent)', gap: '0.4rem'}}
+                      className="messages-btn-decline"
                     >
-                      <X size={16} /> Decline
+                      <X size={16} />
+                      <span>{isTamil ? 'நிராகரி' : 'Decline'}</span>
                     </button>
                   </div>
                 </div>
-              )) : (
-                <div style={{textAlign: 'center', padding: '4rem', color: 'var(--text-muted)'}}>
-                  <Inbox size={48} style={{opacity: 0.2, marginBottom: '1rem'}} />
-                  <p>No pending requests. Your listings will appear here when buyers want to chat.</p>
-                </div>
-              )}
+              );
+            })
+          ) : (
+            <div className="messages-empty-card">
+              <div className="messages-empty-icon" style={{ background: 'rgba(217, 119, 6, 0.08)', color: '#d97706' }}>
+                <Inbox size={36} />
+              </div>
+              <h3>{isTamil ? 'புதிய கோரிக்கைகள் எதுவும் இல்லை' : 'No Pending Requests'}</h3>
+              <p>
+                {isTamil 
+                  ? 'உங்கள் பதிவுகளுக்கு புதிய கொள்முதல் கோரிக்கைகள் வரும்போது இங்கே தோன்றும்.' 
+                  : 'When buyers or sellers express interest in your listings, their connection requests will show up here.'}
+              </p>
+              <Link to="/add-resource" className="messages-explore-btn">
+                <Store size={18} />
+                <span>{isTamil ? 'புதிய பதிவு சேர்க்க' : 'Add New Listing'}</span>
+              </Link>
             </div>
-          )}
-        </div>
+          )
+        )}
       </div>
     </div>
   );

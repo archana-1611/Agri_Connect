@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
-import { Send, ArrowLeft, User, MapPin } from 'lucide-react';
+import { Send, ArrowLeft, User, MapPin, Phone } from 'lucide-react';
 
 const ChatRoom = () => {
   const { id: requestId } = useParams();
@@ -43,18 +44,7 @@ const ChatRoom = () => {
       setLoading(true);
       
       // 1. Fetch Chat Request & Resource
-      const { data: reqData, error: reqError } = await supabase
-        .from('chat_requests')
-        .select(`
-          *,
-          sender:profiles!sender_id(*),
-          receiver:profiles!receiver_id(*),
-          resource:resources(*)
-        `)
-        .eq('id', requestId)
-        .single();
-
-      if (reqError) throw reqError;
+      const reqData = await api.get(`/chats/${requestId}`);
       
       if (reqData.status !== 'accepted') {
         alert('This chat is not yet active.');
@@ -66,13 +56,7 @@ const ChatRoom = () => {
       setOtherUser(reqData.sender_id === user.id ? reqData.receiver : reqData.sender);
 
       // 2. Fetch Initial Messages
-      const { data: msgData, error: msgError } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('request_id', requestId)
-        .order('created_at', { ascending: true });
-
-      if (msgError) throw msgError;
+      const msgData = await api.get(`/chats/${requestId}/messages`);
       setMessages(msgData || []);
 
     } catch (err) {
@@ -155,17 +139,9 @@ const ChatRoom = () => {
     setMessages(prev => [...prev, optimisticMessage]);
 
     try {
-      const { data, error } = await supabase
-        .from('messages')
-        .insert({
-          request_id: requestId,
-          sender_id: user.id,
-          content: messageContent
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
+      const data = await api.post(`/chats/${requestId}/messages`, {
+        content: messageContent
+      });
       
       // Replace the optimistic message with the real one from DB (to get correct ID/Timestamp)
       setMessages(prev => prev.map(msg => msg.id === tempId ? data : msg));
@@ -218,6 +194,28 @@ const ChatRoom = () => {
                 </span>
               </div>
             </div>
+            {otherUser?.phone && (
+              <a 
+                href={`tel:${otherUser.phone}`} 
+                style={{
+                  borderRadius: '50%', 
+                  width: '38px', 
+                  height: '38px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                  border: '1px solid rgba(34, 197, 94, 0.2)',
+                  color: 'var(--color-primary-dark)',
+                  marginLeft: '0.5rem',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
+                title={otherUser.phone}
+              >
+                <Phone size={16} />
+              </a>
+            )}
           </div>
           <div style={{textAlign: 'right', display: 'none', md: {display: 'block'}}}>
              <span className="text-muted" style={{fontSize: '0.8rem', display: 'block'}}>Discussing</span>
@@ -226,7 +224,7 @@ const ChatRoom = () => {
         </div>
 
         {/* Status Notification */}
-        {!request.resource_id && (
+        {!request.resource_id && request.resource_title !== 'Direct Negotiation' && (
            <div style={{
              backgroundColor: 'rgba(242, 109, 58, 0.1)', 
              color: 'var(--color-accent)', 
@@ -312,20 +310,20 @@ const ChatRoom = () => {
           <input 
             type="text" 
             className="form-select" 
-            placeholder={request.resource_id ? "Type your message..." : "Chat disabled - crop no longer available"} 
+            placeholder={(request.resource_id || request.resource_title === 'Direct Negotiation') ? "Type your message..." : "Chat disabled - crop no longer available"} 
             value={newMessage}
             onChange={(e) => {
               setNewMessage(e.target.value);
-              if (request.resource_id) handleTyping();
+              if (request.resource_id || request.resource_title === 'Direct Negotiation') handleTyping();
             }}
-            disabled={!request.resource_id}
-            style={{flex: 1, borderRadius: 'var(--radius-full)', paddingLeft: '1.5rem', backgroundColor: !request.resource_id ? 'rgba(0,0,0,0.05)' : ''}}
+            disabled={!request.resource_id && request.resource_title !== 'Direct Negotiation'}
+            style={{flex: 1, borderRadius: 'var(--radius-full)', paddingLeft: '1.5rem', backgroundColor: (!request.resource_id && request.resource_title !== 'Direct Negotiation') ? 'rgba(0,0,0,0.05)' : ''}}
           />
           <button 
             type="submit" 
             className="btn btn-primary" 
             style={{borderRadius: '50%', width: '48px', height: '48px', padding: 0, justifyContent: 'center'}}
-            disabled={!newMessage.trim() || !request.resource_id}
+            disabled={!newMessage.trim() || (!request.resource_id && request.resource_title !== 'Direct Negotiation')}
           >
             <Send size={20} />
           </button>

@@ -1,0 +1,366 @@
+/* Surplus & Crop Predictor Premium Styles */
+.surplus-page {
+  background-color: var(--bg-main, #f8fafc);
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
+.surplus-header {
+  background: linear-gradient(135deg, #064e3b 0%, #15803d 70%, #16a34a 100%);
+  color: white;
+  padding: 6.5rem 1.5rem 3rem 1.5rem;
+  border-radius: 0 0 1.5rem 1.5rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.surplus-header h1 {
+  font-size: 2.4rem;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.surplus-header p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.05rem;
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.surplus-container {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Glassmorphic Input Card */
+.futuristic-prediction-inputs {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(21, 128, 61, 0.18);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.calc-inputs-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Fixed Grid Layout to prevent column overlap */
+.calc-grid-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.calc-field label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #166534;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calc-field input, 
+.calc-field select {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid rgba(21, 128, 61, 0.18);
+  border-radius: 12px;
+  background: white;
+  outline: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+
+.calc-field input:focus, 
+.calc-field select:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+/* Flexible Unit Input Group */
+.unit-input-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.unit-input-group input {
+  flex: 1 1 0%;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.unit-input-group select {
+  width: 105px;
+  flex-shrink: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+  background-color: #f8fafc;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* Accuracy Badge */
+.badge-ai-model {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* Prediction Metrics Grid */
+.prediction-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.metric-card .card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.yield-card .card-icon { background: #dbeafe; color: #2563eb; }
+.surplus-card .card-icon { background: #fef3c7; color: #d97706; }
+.harvest-card .card-icon { background: #fae8ff; color: #c026d3; }
+.profit-main-card .card-icon { background: #dcfce7; color: #16a34a; }
+.profit-surplus-card .card-icon { background: #f0fdf4; color: #15803d; }
+
+.yield-card { border-left: 5px solid #2563eb; }
+.surplus-card { border-left: 5px solid #d97706; }
+.harvest-card { border-left: 5px solid #c026d3; }
+.profit-main-card { border-left: 5px solid #16a34a; }
+.profit-surplus-card { border-left: 5px solid #15803d; }
+
+.metric-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metric-card .card-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metric-card .metric-value {
+  font-size: 1.65rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin: 0.1rem 0;
+}
+
+.metric-card .metric-value .unit {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.metric-card .metric-value.text-harvest { color: #86198f; }
+.metric-card .metric-value.text-success { color: #15803d; }
+.metric-card .metric-value.text-accent { color: #b45309; }
+
+.metric-card .subtext {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.metric-card .subtext.highlight {
+  color: #d97706;
+  font-weight: 700;
+}
+
+/* Total Earnings Banner */
+.total-earnings-banner {
+  background: linear-gradient(135deg, #fefcbf 0%, #fef08a 50%, #fef3c7 100%);
+  border: 2px solid #eab308;
+  border-radius: 18px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 10px 25px rgba(234, 179, 8, 0.15);
+}
+
+/* AI Tips & Suggestions */
+.tips-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tip-card-item {
+  background: white;
+  border: 1px solid rgba(21, 128, 61, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.tip-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: rgba(21, 128, 61, 0.25);
+}
+
+.tip-card-icon {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.tip-card-text {
+  font-size: 0.82rem;
+  color: #334155;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Loader Animation & 7-Second Multi-Stage Buffer */
+.booking-loading {
+  background: white;
+  border: 1.5px solid rgba(21, 128, 61, 0.18);
+  border-radius: 20px;
+  padding: 3rem 1.5rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.ai-pulse-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(34, 197, 94, 0.2);
+}
+
+.linear-progress-bar {
+  width: 100%;
+  max-width: 420px;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  margin: 1.5rem auto 0 auto;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80, #16a34a);
+  transition: width 1.8s ease-in-out;
+}
+
+.progress-fill.stage-1 { width: 25%; }
+.progress-fill.stage-2 { width: 50%; }
+.progress-fill.stage-3 { width: 75%; }
+.progress-fill.stage-4 { width: 100%; }
+
+.buffer-steps-indicator {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.step-dot {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  color: #15803d;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+@media (max-width: 900px) {
+  .calc-grid-three {
+    grid-template-columns: 1fr;
+  }
+  .calc-field label {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 768px) {
+  .futuristic-prediction-inputs {
+    padding: 1.25rem;
+  }
+  .total-earnings-banner {
+    padding: 1.25rem;
+  }
+}

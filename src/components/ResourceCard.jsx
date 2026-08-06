@@ -35,7 +35,7 @@ const ResourceCard = ({ data, onRemove }) => {
         
         <div className="card-footer">
           <div className="card-price">
-            ₹{Number(data.price).toFixed(2)}
+            ₹{Math.round(Number(data.price))}
           </div>
           <Link to={`/resource/${data.id}`} className="btn btn-primary btn-sm">
             View Details

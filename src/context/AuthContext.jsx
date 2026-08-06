@@ -12,9 +12,22 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check active sessions and sets the user
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.warn("Session error, resetting auth:", error.message);
+          await supabase.auth.signOut().catch(() => {});
+          setUser(null);
+        } else {
+          setUser(session?.user ?? null);
+        }
+      } catch (err) {
+        console.error("Auth initialization error:", err);
+        await supabase.auth.signOut().catch(() => {});
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getSession();
