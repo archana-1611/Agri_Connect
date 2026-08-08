@@ -20,8 +20,10 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Setup Google Chrome
+      - name: Setup Google Chrome 133
         uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: '133'
 
       - name: Install root dependencies
         run: npm ci || npm install
