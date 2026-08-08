@@ -1,0 +1,51 @@
+name: Baseline & Load Tests - 300 Performance Test Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-baseline-load:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci || npm install
+
+      - name: Start Web App & Services in background on port 8081
+        run: |
+          npx vite --port 8081 &
+          echo "Waiting for app server on http://localhost:8081..."
+          until curl -s http://localhost:8081 > /dev/null; do
+            sleep 2
+          done
+          echo "App server is ready on http://localhost:8081!"
+
+      - name: Install Baseline & Load test suite dependencies
+        working-directory: ./collabroom-tests/baseline-load
+        run: npm ci || npm install
+
+      - name: Run all 300 Baseline & Load Performance tests
+        working-directory: ./collabroom-tests/baseline-load
+        run: npm test
+
+      - name: Generate 300-Row Baseline & Load Excel report
+        working-directory: ./collabroom-tests/baseline-load
+        run: npx ts-node generate-report.ts
+
+      - name: Upload Baseline & Load 300 Test Report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-load-report-300.xlsx
+          path: collabroom-tests/reports/baseline-load*.xlsx

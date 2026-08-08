@@ -1,0 +1,22 @@
+{
+  "name": "agriconnect-baseline-load-tests",
+  "version": "1.0.0",
+  "description": "300 Automated Baseline & Load Performance Tests for AgriConnect Web and Mobile App",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "npx jest --runInBand --detectOpenHandles",
+    "report": "ts-node generate-report.ts"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
