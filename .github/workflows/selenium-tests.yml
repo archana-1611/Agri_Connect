@@ -20,17 +20,15 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install Google Chrome & ChromeDriver
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable chromedriver
+      - name: Setup Google Chrome
+        uses: browser-actions/setup-chrome@v1
 
       - name: Install root dependencies
         run: npm ci || npm install
 
       - name: Start Web App in background on port 8081
         run: |
-          npm run dev:frontend -- --port 8081 &
+          npx vite --port 8081 &
           echo "Waiting for app to respond on http://localhost:8081..."
           until curl -s http://localhost:8081 > /dev/null; do
             sleep 2
