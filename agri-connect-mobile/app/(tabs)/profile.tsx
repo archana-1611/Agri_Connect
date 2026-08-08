@@ -10,7 +10,7 @@ import { supabase } from '../../lib/supabase';
 import { 
   LogOut, Package, Eye, MessageSquare, BarChart2, Edit2, 
   Trash2, CheckCircle, ShieldCheck, UserCircle, MapPin, X, 
-  Sparkles, PlusCircle, ArrowRight 
+  Sparkles, PlusCircle, ArrowRight, FileText, Lock 
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -318,6 +318,44 @@ export default function ProfileScreen() {
           )}
         </View>
       )}
+
+      {/* Legal & Policies Section */}
+      <View style={{ marginTop: 16, marginBottom: 20 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <ShieldCheck color="#15803d" size={20} />
+          <Text style={styles.sectionTitle}>
+            {isTamil ? 'சட்ட ரீதியான கொள்கைகள்' : 'Legal & Policies'}
+          </Text>
+        </View>
+
+        <View style={{ backgroundColor: 'white', borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' }}>
+          <TouchableOpacity 
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' }}
+            onPress={() => router.push('/terms')}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <FileText color="#15803d" size={18} />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#0f172a' }}>
+                {isTamil ? 'சேவை விதிமுறைகள் (Terms of Service)' : 'Terms of Service'}
+              </Text>
+            </View>
+            <ArrowRight color="#94a3b8" size={16} />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 }}
+            onPress={() => router.push('/privacy')}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Lock color="#15803d" size={18} />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#0f172a' }}>
+                {isTamil ? 'தனியுரிமைக் கொள்கை (Privacy Policy)' : 'Privacy Policy'}
+              </Text>
+            </View>
+            <ArrowRight color="#94a3b8" size={16} />
+          </TouchableOpacity>
+        </View>
+      </View>
 
       {/* 3. MODAL: UPGRADE TO SELLER ACCOUNT */}
       <Modal

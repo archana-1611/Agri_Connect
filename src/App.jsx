@@ -17,6 +17,7 @@ import SurplusPrediction from './pages/SurplusPrediction';
 import SustainabilityDashboard from './pages/SustainabilityDashboard';
 import DemandForecast from './pages/DemandForecast';
 import ResetPassword from './pages/ResetPassword';
+import TermsPrivacy from './pages/TermsPrivacy';
 import './App.css';
 
 // Protected Route wrapper
@@ -55,7 +56,10 @@ const PublicRoute = ({ children }) => {
 function AppContent() {
   const { user } = useAuth();
   const location = useLocation();
-  const isGuestPage = (!user && (location.pathname === '/auth' || location.pathname === '/')) || location.pathname === '/reset-password';
+  const isGuestPage = (!user && (location.pathname === '/auth' || location.pathname === '/')) || 
+                     location.pathname === '/reset-password' || 
+                     location.pathname === '/terms' || 
+                     location.pathname === '/privacy';
 
   return (
     <div className={`app-layout ${isGuestPage ? 'guest-layout' : ''}`}>
@@ -69,6 +73,8 @@ function AppContent() {
             </PublicRoute>
           } />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/terms" element={<TermsPrivacy initialTab="terms" />} />
+          <Route path="/privacy" element={<TermsPrivacy initialTab="privacy" />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
           <Route path="/market-insights" element={<ProtectedRoute><MarketInsights /></ProtectedRoute>} />

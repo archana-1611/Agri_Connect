@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Sprout, Mail } from 'lucide-react';
 import './Footer.css';
 
@@ -19,19 +20,18 @@ const Footer = () => {
         <div className="footer-links">
           <h4>Platform</h4>
           <ul>
-            <li><a href="/marketplace">Marketplace</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Farmers Directory</a></li>
+            <li><Link to="/marketplace">Marketplace</Link></li>
+            <li><Link to="/terms">Terms of Service</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
           </ul>
         </div>
 
         <div className="footer-links">
-          <h4>Resources</h4>
+          <h4>Legal & Support</h4>
           <ul>
+            <li><Link to="/terms">Terms of Use</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
             <li><a href="#">Help Center</a></li>
-            <li><a href="#">Farming Guides</a></li>
-            <li><a href="#">Weather Forecast</a></li>
-            <li><a href="#">Community Forum</a></li>
           </ul>
         </div>
 
@@ -45,7 +45,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} AgriConnect. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} AgriConnect. All rights reserved. &bull; <Link to="/terms">Terms</Link> &bull; <Link to="/privacy">Privacy</Link></p>
       </div>
     </footer>
   );

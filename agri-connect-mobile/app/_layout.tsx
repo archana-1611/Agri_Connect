@@ -45,8 +45,9 @@ function AuthGuard() {
     const segs = segments as any;
     const inAuthGroup = segs[0] === 'auth';
     const inIndex = segs.length === 0 || segs[0] === 'index';
+    const inPublicLegal = segs[0] === 'terms' || segs[0] === 'privacy';
     
-    if (!user && !inAuthGroup && !inIndex) {
+    if (!user && !inAuthGroup && !inIndex && !inPublicLegal) {
       router.replace('/');
     } else if (user && (inAuthGroup || inIndex)) {
       const rawRole = user.user_metadata?.role || 'Farmer';
@@ -71,6 +72,8 @@ function AuthGuard() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="auth" />
+      <Stack.Screen name="terms" />
+      <Stack.Screen name="privacy" />
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="support-chat" />
     </Stack>

@@ -94,7 +94,7 @@ const Navbar = () => {
           {/* Add Resource Button at the Top (Sellers/Farmers only) */}
           {user?.user_metadata?.role?.toLowerCase() !== 'buyer' && (
             <div className="sidebar-action-wrapper">
-              <Link to="/add-resource" className="sidebar-add-btn" onClick={closeMobileMenu}>
+              <Link to="/add-resource" className="sidebar-add-btn" data-testid="nav-add-resource" onClick={closeMobileMenu}>
                 <PlusCircle size={20} />
                 <span>{isTamil ? 'வளம் சேர்க்க' : 'Add Resource'}</span>
               </Link>
@@ -106,6 +106,7 @@ const Navbar = () => {
             <Link 
               to="/dashboard" 
               className={`sidebar-link ${location.pathname === '/dashboard' ? 'active' : ''}`}
+              data-testid="nav-dashboard"
               onClick={closeMobileMenu}
             >
               <Home size={20} />
@@ -115,6 +116,7 @@ const Navbar = () => {
             <Link 
               to="/marketplace" 
               className={`sidebar-link ${location.pathname === '/marketplace' ? 'active' : ''}`}
+              data-testid="nav-marketplace"
               onClick={closeMobileMenu}
             >
               <Users size={20} />
@@ -125,6 +127,7 @@ const Navbar = () => {
             <Link 
               to="/messages" 
               className={`sidebar-link ${location.pathname === '/messages' || location.pathname.startsWith('/chat/') ? 'active' : ''}`}
+              data-testid="nav-messages"
               onClick={closeMobileMenu}
             >
               <MessageCircle size={20} />
@@ -134,6 +137,7 @@ const Navbar = () => {
             <Link 
               to="/profile" 
               className={`sidebar-link ${location.pathname === '/profile' ? 'active' : ''}`}
+              data-testid="nav-profile"
               onClick={closeMobileMenu}
             >
               <User size={20} />
@@ -143,12 +147,12 @@ const Navbar = () => {
 
           {/* Sidebar Footer Actions */}
           <div className="sidebar-footer">
-            <button className="sidebar-lang-btn" onClick={toggleLanguage}>
+            <button className="sidebar-lang-btn" data-testid="nav-lang-toggle" onClick={toggleLanguage}>
               <Languages size={18} />
               <span>{isTamil ? 'English' : 'தமிழ்'}</span>
             </button>
 
-            <button className="sidebar-logout-btn" onClick={handleLogout}>
+            <button className="sidebar-logout-btn" data-testid="nav-logout" onClick={handleLogout}>
               <LogOut size={18} />
               <span>{isTamil ? 'வெளியேறு' : 'Logout'}</span>
             </button>

@@ -472,7 +472,7 @@ const Auth = () => {
                   </div>
 
                   {error && (
-                    <div className="error-message glass-alert mb-3">
+                    <div className="error-message glass-alert mb-3" data-testid="auth-error-alert">
                       <AlertCircle size={16} />
                       <span>{error}</span>
                     </div>
@@ -565,6 +565,7 @@ const Auth = () => {
                         value={forgotEmail} 
                         onChange={e => setForgotEmail(e.target.value)} 
                         className="form-input-white"
+                        data-testid="forgot-email-input"
                       />
                     </div>
                   </div>
@@ -573,6 +574,7 @@ const Auth = () => {
                     type="submit" 
                     className="btn btn-primary w-100 mt-2 flex-center btn-lg auth-submit-btn-premium" 
                     disabled={loading}
+                    data-testid="forgot-submit-btn"
                   >
                     <span>{loading ? '...' : (isTamil ? 'இணைப்பை அனுப்பு' : 'Send Reset Link')}</span>
                     <ArrowRight size={18} />
@@ -587,6 +589,7 @@ const Auth = () => {
                         setMessage('');
                       }} 
                       className="btn-link-green"
+                      data-testid="forgot-back-btn"
                     >
                       {isTamil ? 'உள்நுழைவுக்குத் திரும்பு' : 'Back to Login'}
                     </button>
@@ -630,6 +633,7 @@ const Auth = () => {
                             onChange={e => setFullName(e.target.value)} 
                             className="form-input-white"
                             autoComplete="name"
+                            data-testid="fullname-input"
                           />
                         </div>
                       </div>
@@ -650,6 +654,7 @@ const Auth = () => {
                             className={`form-input-white ${phoneError ? 'input-error' : ''}`}
                             maxLength={10}
                             autoComplete="tel"
+                            data-testid="phone-input"
                           />
                         </div>
                         {phoneError && <div style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>{phoneError}</div>}
@@ -670,6 +675,7 @@ const Auth = () => {
                             onChange={e => validateEmail(e.target.value)} 
                             className={`form-input-white ${emailError ? 'input-error' : ''}`}
                             autoComplete="email"
+                            data-testid="email-input"
                           />
                         </div>
                         {emailError && <div style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>{emailError}</div>}
@@ -688,6 +694,7 @@ const Auth = () => {
                             value={district} 
                             onChange={e => setDistrict(e.target.value)}
                             style={{ height: '44px', paddingLeft: '2.75rem' }}
+                            data-testid="district-select"
                           >
                             <option value="">{isTamil ? "மாவட்டத்தைத் தேர்ந்தெடுக்கவும்" : "Select District"}</option>
                             {TAMIL_NADU_DISTRICTS.map(dist => (
@@ -733,12 +740,12 @@ const Auth = () => {
                       <div className="form-group">
                         <label className="input-label mb-2">{isTamil ? 'உறுப்பினர் பங்கு' : 'Select Platform Role'}</label>
                         <div className="role-selector">
-                          <label className={`role-card-white ${role === 'Farmer' ? 'active' : ''}`}>
+                          <label className={`role-card-white ${role === 'Farmer' ? 'active' : ''}`} data-testid="role-farmer">
                             <input type="radio" name="role" value="Farmer" checked={role === 'Farmer'} onChange={e => setRole(e.target.value)} required />
                             <Sprout size={18} />
                             <span>{isTamil ? 'விவசாயி' : 'Farmer'}</span>
                           </label>
-                          <label className={`role-card-white ${role === 'Buyer' ? 'active' : ''}`}>
+                          <label className={`role-card-white ${role === 'Buyer' ? 'active' : ''}`} data-testid="role-buyer">
                             <input type="radio" name="role" value="Buyer" checked={role === 'Buyer'} onChange={e => setRole(e.target.value)} />
                             <User size={18} />
                             <span>{isTamil ? 'வாங்குபவர்' : 'Buyer'}</span>
@@ -761,6 +768,7 @@ const Auth = () => {
                             onChange={e => validateLoginId(e.target.value)} 
                             className={`form-input-white ${loginIdError ? 'input-error' : ''}`}
                             autoComplete="username"
+                            data-testid="login-id-input"
                           />
                         </div>
                         {loginIdError && <div style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem' }}>{loginIdError}</div>}
@@ -782,11 +790,13 @@ const Auth = () => {
                           className="form-input-white"
                           style={{ paddingRight: '2.5rem' }}
                           autoComplete={isLogin ? "current-password" : "new-password"}
+                          data-testid="password-input"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           className="password-eye-btn"
+                          data-testid="toggle-password-visibility-btn"
                         >
                           {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
@@ -804,6 +814,7 @@ const Auth = () => {
                               setMessage('');
                             }}
                             className="forgot-password-link text-xxs font-bold"
+                            data-testid="forgot-password-link"
                           >
                             {isTamil ? 'கடவுச்சொல்லை மறந்துவிட்டீர்களா?' : 'Forgot Password?'}
                           </button>
@@ -815,6 +826,7 @@ const Auth = () => {
                       type="submit" 
                       className="btn btn-primary w-100 mt-2 flex-center btn-lg auth-submit-btn-premium" 
                       disabled={loading}
+                      data-testid="auth-submit-btn"
                     >
                       <span>{loading ? '...' : (isLogin ? (isTamil ? 'உள்நுழை' : 'Login') : (isTamil ? 'பதிவு செய்' : 'Sign Up'))}</span>
                       <ArrowRight size={18} />
@@ -831,9 +843,21 @@ const Auth = () => {
                         className="btn-link-green" 
                         onClick={() => {setIsLogin(!isLogin); setError('');}} 
                         type="button"
+                        data-testid="switch-auth-mode-btn"
                       >
                         {isLogin ? (isTamil ? 'புதிய கணக்கு' : 'Sign up') : (isTamil ? 'உள்நுழைக' : 'Login')}
                       </button>
+                    </p>
+                    <p className="terms-notice-text" style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.75rem' }}>
+                      {isTamil ? 'தொடர்வதன் மூலம், நீங்கள் எங்கள் ' : 'By continuing, you agree to our '}
+                      <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#15803d', fontWeight: '600', textDecoration: 'underline' }}>
+                        {isTamil ? 'சேவை விதிமுறைகள்' : 'Terms of Service'}
+                      </a>
+                      {isTamil ? ' மற்றும் ' : ' & '}
+                      <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#15803d', fontWeight: '600', textDecoration: 'underline' }}>
+                        {isTamil ? 'தனியுரிமைக் கொள்கை' : 'Privacy Policy'}
+                      </a>
+                      {isTamil ? '-யை ஏற்கிறீர்கள்.' : '.'}
                     </p>
                   </div>
                 </>

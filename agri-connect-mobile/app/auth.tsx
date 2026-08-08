@@ -429,6 +429,25 @@ export default function AuthScreen() {
                 {isTamil ? "புதிய கணக்கு வேண்டுமா? பதிவு செய்" : "Don't have an account? Sign up"}
               </Text>
             </TouchableOpacity>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 14, gap: 4, flexWrap: 'wrap' }}>
+              <Text style={{ fontSize: 11.5, color: '#64748b' }}>
+                {isTamil ? 'தொடர்வதன் மூலம் ' : 'By continuing, you agree to '}
+              </Text>
+              <TouchableOpacity onPress={() => router.push('/terms')}>
+                <Text style={{ fontSize: 11.5, color: '#15803d', fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                  {isTamil ? 'விதிமுறைகள்' : 'Terms of Service'}
+                </Text>
+              </TouchableOpacity>
+              <Text style={{ fontSize: 11.5, color: '#64748b' }}>
+                {isTamil ? ' மற்றும் ' : ' & '}
+              </Text>
+              <TouchableOpacity onPress={() => router.push('/privacy')}>
+                <Text style={{ fontSize: 11.5, color: '#15803d', fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                  {isTamil ? 'தனியுரிமை' : 'Privacy Policy'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : (
           // ================= SIGNUP FORM (WIZARD FLOW) =================
@@ -583,14 +602,35 @@ export default function AuthScreen() {
             )}
 
             {signupStep === 1 && (
-              <TouchableOpacity 
-                style={styles.switchButton} 
-                onPress={() => setIsLogin(true)}
-              >
-                <Text style={styles.switchText}>
-                  {isTamil ? "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழைக" : "Already have an account? Log in"}
-                </Text>
-              </TouchableOpacity>
+              <>
+                <TouchableOpacity 
+                  style={styles.switchButton} 
+                  onPress={() => setIsLogin(true)}
+                >
+                  <Text style={styles.switchText}>
+                    {isTamil ? "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழைக" : "Already have an account? Log in"}
+                  </Text>
+                </TouchableOpacity>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 14, gap: 4, flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 11.5, color: '#64748b' }}>
+                    {isTamil ? 'தொடர்வதன் மூலம் ' : 'By continuing, you agree to '}
+                  </Text>
+                  <TouchableOpacity onPress={() => router.push('/terms')}>
+                    <Text style={{ fontSize: 11.5, color: '#15803d', fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                      {isTamil ? 'விதிமுறைகள்' : 'Terms of Service'}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={{ fontSize: 11.5, color: '#64748b' }}>
+                    {isTamil ? ' மற்றும் ' : ' & '}
+                  </Text>
+                  <TouchableOpacity onPress={() => router.push('/privacy')}>
+                    <Text style={{ fontSize: 11.5, color: '#15803d', fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                      {isTamil ? 'தனியுரிமை' : 'Privacy Policy'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
             )}
           </View>
         )}

@@ -754,7 +754,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="dashboard-mobile">
+    <div className="dashboard-mobile" data-testid="dashboard-container">
       
       {/* 1. Welcome & Weather Section */}
       <header className="dashboard-header animate-fade-in">
