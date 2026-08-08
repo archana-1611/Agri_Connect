@@ -1,0 +1,51 @@
+name: Appium Mobile E2E Tests - 300 Mobile Test Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-mobile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci || npm install
+
+      - name: Start Mobile Web App in background on port 8081
+        run: |
+          npx vite --port 8081 &
+          echo "Waiting for mobile app server on http://localhost:8081..."
+          until curl -s http://localhost:8081 > /dev/null; do
+            sleep 2
+          done
+          echo "Mobile App is ready on http://localhost:8081!"
+
+      - name: Install Appium test suite dependencies
+        working-directory: ./collabroom-tests/appium
+        run: npm ci || npm install
+
+      - name: Run all 300 Appium mobile tests
+        working-directory: ./collabroom-tests/appium
+        run: npm test
+
+      - name: Generate 300-Row Appium Excel report
+        working-directory: ./collabroom-tests/appium
+        run: npx ts-node generate-report.ts
+
+      - name: Upload Appium 300 Mobile Test Report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-report-300.xlsx
+          path: collabroom-tests/reports/appium*.xlsx
